@@ -10,12 +10,12 @@ import {
 } from 'antd';
 
 
-class BusinessLogin extends PureComponent {
+class Registry extends PureComponent {
   constructor (props) {
     super(props)
   }
 
-  static formName = 'business';
+  static formName = 'registry';
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ class BusinessLogin extends PureComponent {
       getFieldDecorator,
     } = this.props.form;
     const {showForm} = this.props.data;
-    const formClassName = showForm === BusinessLogin.formName ? 'form-show' : 'form-hide';
+    const formClassName = showForm === Registry.formName ? 'form-show' : 'form-hide';
     return <Form layout='horizontal' onSubmit={this.handleSubmit} className={`form-center ${formClassName}`}>
       < Form.Item>
         {getFieldDecorator('telephone', {
@@ -56,4 +56,4 @@ class BusinessLogin extends PureComponent {
   }
 }
 
-export default Form.create()(BusinessLogin)
+export default Form.create()(Registry)

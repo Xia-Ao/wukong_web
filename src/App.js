@@ -1,19 +1,28 @@
-import React, { PureComponent } from 'react';
-import logo from './logo.svg';
+import React, {PureComponent, Fragment} from 'react';
+import {BrowserRouter, Route, Redirect, Switch} from "react-router-dom";
+// import {Provider} from 'react-redux';
+
+import HomeLayout from './view/layout';
+import Login from './view/login';
+
+// import Axios from 'axios'
+
 import './App.css';
 
 class App extends PureComponent {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Fragment>
+        {/* <Provider> */}
+          <BrowserRouter>
+            <Switch>
+              <Route path='/login' exact component={Login}></Route>
+              <Route path='/index' component={HomeLayout}></Route>
+              <Redirect from='/' to='/index/home'/>
+            </Switch>
+          </BrowserRouter>
+        {/* </Provider> */}
+      </Fragment>
     );
   }
 }

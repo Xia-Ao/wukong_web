@@ -8,17 +8,15 @@ import React, {PureComponent} from 'react'
 import {
   Form, Icon, Input, Button, message,
 } from 'antd';
-import {actionCreator} from './store';
-import connect from 'react-redux/es/connect/connect';
 import axios from "axios";
 import {login} from './api';
 
-class AdminLogin extends PureComponent {
+class UserLogin extends PureComponent {
   constructor (props) {
     super(props)
   }
 
-  static formName = 'admin';
+  static formName = 'login';
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -26,11 +24,6 @@ class AdminLogin extends PureComponent {
       if (!err) {
         const {loginSubmit} = this.props.data;
         loginSubmit(values);
-        // login(values).then((data) => {
-        //   this.props.tokenInit(data);
-        //   fetchMenuList();
-        //   // this.props.data.history.push('/index');
-        // });
       }
     });
   };
@@ -41,7 +34,7 @@ class AdminLogin extends PureComponent {
       getFieldDecorator,
     } = this.props.form;
     const {showForm} = this.props.data;
-    const formClassName = showForm === AdminLogin.formName ? 'form-show' : 'form-hide';
+    const formClassName = showForm === UserLogin.formName ? 'form-show' : 'form-hide';
     return <Form layout='horizontal' onSubmit={this.handleSubmit} className={`form-center ${formClassName}`}>
       <Form.Item>
         {getFieldDecorator('UserName', {
@@ -67,19 +60,4 @@ class AdminLogin extends PureComponent {
 }
 
 
-// const mapStateToProps = (state) => {
-//   return {
-//     token: state.global
-//   }
-// };
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     tokenInit (data) {
-//       dispatch(actionCreator.tokenInit(data));
-//     }
-//   }
-// };
-
-
-export default Form.create()(AdminLogin)
+export default Form.create()(UserLogin)
