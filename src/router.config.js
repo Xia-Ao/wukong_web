@@ -1,6 +1,8 @@
-import {getUserType} from "./common/auth";
+import { getUserType } from "./common/auth";
 import Home from './view/home';
 import publishPlan from './view/publishPlan';
+import publishQueen from './view/publishQueen';
+import program from './view/program';
 
 
 
@@ -52,10 +54,44 @@ export const router = [
     icon: 'icon-beizi',
     name: '发布计划',
     path: '/index/publish',
-    defaultPath: '/index/publish/list',
+    defaultPath: '/index/publish/plan',
     slideLeft: true,
-    component: publishPlan
+    component: publishPlan,
+    children: [
+      {
+        key: '1',
+        name: '所有发布计划',
+        icon: 'icon-icon',
+        path: '/index/publish/plan',
+        slideLeft: true,
+        component: publishPlan
+      },
+      {
+        key: '2',
+        name: '发布队列',
+        icon: 'icon-xuexiao',
+        path: '/index/publish/queen',
+        slideLeft: true,
+        component: publishQueen
+      },
+      // {
+      //   key: '3',
+      //   name: '班级管理',
+      //   icon: 'icon-banji',
+      //   path: '/index/device/schoolClass',
+      //   slideLeft: true,
+      //   component: SchoolClassList
+      // },
+    ]
   },
- 
+  {
+    key: 'program',
+    icon: 'icon-beizi',
+    name: '应用',
+    path: '/index/program',
+    defaultPath: '/index/program/list',
+    slideLeft: true,
+    component: program
+  },
 ];
 

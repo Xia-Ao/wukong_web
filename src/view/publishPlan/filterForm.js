@@ -35,6 +35,13 @@ class FilterForm extends PureComponent {
           <Input placeholder="设备编号或者商家"/>
         )}
       </Form.Item>
+      <Form.Item label='关键字'>
+        {getFieldDecorator('key', {
+          rules: [{required: false,}],
+        })(
+          <Input placeholder="设备编号或者商家"/>
+        )}
+      </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" className='marginRight10'><Icon type="search"/>查询</Button>
         <Button onClick={()=>resetFields()}><Icon type="close"/>清除</Button>

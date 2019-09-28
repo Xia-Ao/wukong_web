@@ -1,18 +1,20 @@
-import React, {PureComponent} from 'react';
-import {Table, Divider, Tag, Button, Popconfirm, Modal, message} from 'antd';
+import React, { PureComponent, Fragment } from 'react';
+import { Table, Divider, Tag, Button, Popconfirm, Modal, message } from 'antd';
+import {withRouter} from "react-router-dom";
 
-import CreateForm from './createForm';
+import AddOrEditForm from './AddOrEditForm';
 
-import {dateFormat} from '../../common/utils';
-import ajax from '../../common/ajax';
+import { dateFormat } from '../../common/utils';
+import { getList } from './api';
 import './index.less'
 
-class DataCenter extends PureComponent {
+class PublishPlan extends PureComponent {
   constructor(porps) {
     super(porps);
     this.state = {
       tableData: [],
-      createDialogShow: false,
+      addAndEditDialogShow: true,
+      addAndEditDialogShow: false,
       pagination: {
         showSizeChanger: true,
         current: 1,
@@ -32,13 +34,13 @@ class DataCenter extends PureComponent {
     {
       key: 'publishId',
       title: '发布计划ID',
-      dataIndex: 'publishId',
+      dataIndex: 'id',
       align: 'center',
     },
     {
-      key: 'project',
+      key: 'projectName',
       title: '所属项目',
-      dataIndex: 'project',
+      dataIndex: 'projectName',
       align: 'center',
     },
     {
@@ -48,93 +50,125 @@ class DataCenter extends PureComponent {
       align: 'center',
     },
     {
-      key: 'yufaStatus',
-      title: '预发布',
-      dataIndex: 'yufaStatus',
+      key: 'planPublishTime',
+      title: '计划发布时间',
+      dataIndex: 'planPublishTime',
       align: 'center',
-      render: status => (
-        <Tag className='aTagNone' color={status ? 'green' : 'red'}>{!status ? '未发布' : '已发布'}</Tag>
-      ),
+      render: time => time ? dateFormat(new Date(time).getTime(), 'yyyy-MM-dd') : '无',
     },
     {
-      key: 'publishStatus',
-      title: '正式发布',
-      dataIndex: 'publishStatus',
+      key: 'status',
+      title: '状态',
+      dataIndex: 'status',
       align: 'center',
-      render: status => (
-        <Tag className='aTagNone' color={status ? 'green' : 'red'}>{!status ? '未发布' : '已发布'}</Tag>
-      ),
+      render: status => {
+        if (status === 0) {
+          return <Tag color={'red'}>未发布</Tag>
+        } else if (status === 1) {
+          return <Tag color={'green'}>发布中</Tag>
+        } else if (status === 2) {
+          return <Tag color={'grey'}>已发布</Tag>
+        }
+        // status === 0 && (<Tag color={'green'}>未发布</Tag>)
+        // status === 1 && <Tag color={'green'}>发布中</Tag>
+        // status === 2 && <Tag color={'green'}>已发布</Tag>
+      },
     },
     {
-      key: 'publishTime',
-      title: '正式发布时间',
-      dataIndex: 'publishTime',
+      key: 'action',
+      title: '操作',
+      dataIndex: 'status',
       align: 'center',
-      render: time => dateFormat(new Date(time))
-    },
-    {
-      key: 'mergeMaster',
-      title: '合并主干',
-      dataIndex: 'mergeMaster',
-      align: 'center',
-      render: status => (
-        <Tag className='aTagNone' color={status ? 'green' : 'red'}>{!status ? '未合并' : '已合并'}</Tag>
+      render: (status, record) => (
+        // <Fragment>
+          !status ? 
+          <Button type="primary" size="small" className="marginRight10" onClick={() => this.goPublishQuen(record)}>去发布</Button>
+          : <Button type="default" size="small">查看</Button>
+        // </Fragment>
       ),
     },
   ];
 
-  showCreateDialog = () => {
+  // 跳转发布队列
+  goPublishQuen(record) {
+    this.props.history.push({
+      pathname: '/index/publish/queen',
+      query: record || {}
+    })
+  }
+
+  showDialog = () => {
     this.setState({
-      createDialogShow: true,
+      addAndEditDialogShow: true,
       // record
     });
   };
 
   modalCancel = (flag = false) => {
     this.setState({
-      createDialogShow: false,
+      addAndEditDialogShow: false,
     });
+    flag && this.init();
   };
 
   // 初始化获取数据
-  init (params = {}) {
-    const {pagination, searchKey} = this.state;
-    params.pageIndex = params.pageIndex || pagination.current;
+  init(params = {}) {
+    const { pagination, searchKey } = this.state;
+    params.page = params.page || pagination.current;
     params.pageSize = params.pageSize || pagination.pageSize;
-    pagination.current = params.pageIndex;
+    pagination.current = params.page;
     pagination.pageSize = params.pageSize;
     // 获取列表数据
-    ajax(params).then((data) => {
+    getList(params).then((data) => {
       pagination.total = data.total;
       this.setState({
-        tableData: data.InnerData,
+        tableData: data.list,
         pagination,
         searchKey: params.key,
       })
     })
   };
 
-  componentDidMount() {
-
+   componentDidMount () {
+    let pagination = this.state.pagination;
+    pagination.onChange = this.onPaginationChange.bind(this);
+    pagination.onShowSizeChange = this.onPaginationChange.bind(this);
+    this.setState({
+      pagination,
+    });
+    this.init();
   }
+
+  onPaginationChange (page, pageSize) {
+    let {pagination} = this.state;
+    pagination.current = page;
+    pagination.pageSize = pageSize;
+    this.init({page, pageSize});
+    this.setState({
+      pagination,
+    })
+  }
+Ô
 
 
   render() {
-    const {mainData, createDialogShow} = this.state;
+    const { tableData,pagination, addAndEditDialogShow, record } = this.state;
     return <div className="publish-plan-wrapper">
       <div className="title">发布计划</div>
-      <Button type="primary" className='marginTop20' onClick={this.showCreateDialog}>创建发布计划</Button>
+      <Button type="primary" className='marginTop20' onClick={this.showDialog}>创建发布计划</Button>
+      <Divider />
+      <Table columns={this.columns} dataSource={tableData} pagination={pagination} rowKey='id' size='default' />
 
       <Modal title={'新建发布计划'}
-             visible={createDialogShow}
-             onCancel={this.modalCancel}
-             footer={null}
-             destroyOnClose
+        visible={addAndEditDialogShow}
+        onCancel={this.modalCancel}
+        footer={null}
+        destroyOnClose
       >
-        <CreateForm />
+        <AddOrEditForm data={{record, modalCancel: this.modalCancel.bind(this)}} />
       </Modal>
     </div>;
   }
 }
 
-export default DataCenter;
+export default withRouter(PublishPlan);
