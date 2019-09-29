@@ -83,7 +83,7 @@ class PublishPlan extends PureComponent {
         // <Fragment>
           !status ? 
           <Button type="primary" size="small" className="marginRight10" onClick={() => this.goPublishQuen(record)}>去发布</Button>
-          : <Button type="default" size="small">查看</Button>
+          : <Button type="default" size="small" onClick={() => this.goPublishQuen(record)}>查看</Button>
         // </Fragment>
       ),
     },

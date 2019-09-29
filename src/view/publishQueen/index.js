@@ -3,7 +3,7 @@ import { Table, Divider, Tag, Button, Popconfirm, Modal, message } from 'antd';
 
 
 import { dateFormat } from '../../common/utils';
-import { getList, yufaApi, onlineApi, mergeMasterApi} from './api';
+import { getList, yufaApi, onlineApi, mergeMasterApi } from './api';
 import './index.less'
 
 class PublishQueen extends PureComponent {
@@ -11,7 +11,7 @@ class PublishQueen extends PureComponent {
     super(porps);
     this.state = {
       tableData: [],
-      branch: '',
+      params: {},
     }
   }
 
@@ -70,7 +70,7 @@ class PublishQueen extends PureComponent {
       case 1:
         return <Button type="primary" onClick={() => this.yufa(branchInfo)}>预发布</Button>;
       case 2:
-        return <Button type="primary"  loading>预发布中</Button>;
+        return <Button type="primary" loading>预发布中</Button>;
       case 3:
         return <Button type="primary" onClick={() => this.publish(branchInfo)}>正式发布</Button>;
       case 4:
@@ -128,9 +128,19 @@ class PublishQueen extends PureComponent {
   };
 
   componentDidMount() {
-    const { query = {}} = this.props.location;
-    query.branch = 'branch_20190925004232_48366';
-    this.init(query);
+    const { query = {} } = this.props.location;
+    const {params = {}} = this.state;
+    if (query.branch) {
+      this.setState({
+        params: query
+      }, () => {
+        this.init(this.state.params);
+      });
+    } else if(params.branch) {
+      this.init(params);
+    } else {
+      return;
+    }
   }
 
 
