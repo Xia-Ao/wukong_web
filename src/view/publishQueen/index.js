@@ -4,6 +4,7 @@ import { Table, Divider, Tag, Button, Popconfirm, Modal, message } from 'antd';
 
 import { dateFormat } from '../../common/utils';
 import { getList, yufaApi, onlineApi, mergeMasterApi } from './api';
+import { planQueenStorage } from '../../common/storage.js';
 import './index.less'
 
 class PublishQueen extends PureComponent {
@@ -11,7 +12,6 @@ class PublishQueen extends PureComponent {
     super(porps);
     this.state = {
       tableData: [],
-      params: {},
     }
   }
 
@@ -114,6 +114,7 @@ class PublishQueen extends PureComponent {
         return;
       }
       this.init(branchInfo);
+      planQueenStorage.clear();
     })
   }
 
@@ -129,17 +130,14 @@ class PublishQueen extends PureComponent {
 
   componentDidMount() {
     const { query = {} } = this.props.location;
-    const {params = {}} = this.state;
     if (query.branch) {
-      this.setState({
-        params: query
-      }, () => {
-        this.init(this.state.params);
-      });
-    } else if(params.branch) {
-      this.init(params);
+      planQueenStorage.set(query);
+    }
+    let params = planQueenStorage.get() || {};
+    if (!params.branch) {
+      message.warn('当前没有发布队列')
     } else {
-      return;
+      this.init(params);
     }
   }
 

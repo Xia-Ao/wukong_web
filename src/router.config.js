@@ -2,6 +2,7 @@ import { getUserType } from "./common/auth";
 import Home from './view/home';
 import publishPlan from './view/publishPlan';
 import publishQueen from './view/publishQueen';
+import publishHistory from './view/publishHistory';
 import program from './view/program';
 
 
@@ -74,14 +75,14 @@ export const router = [
         slideLeft: true,
         component: publishQueen
       },
-      // {
-      //   key: '3',
-      //   name: '班级管理',
-      //   icon: 'icon-banji',
-      //   path: '/index/device/schoolClass',
-      //   slideLeft: true,
-      //   component: SchoolClassList
-      // },
+      {
+        key: '3',
+        name: '发布历史',
+        icon: 'icon-xuexiao',
+        path: '/index/publish/history',
+        slideLeft: true,
+        component: publishHistory
+      },
     ]
   },
   {

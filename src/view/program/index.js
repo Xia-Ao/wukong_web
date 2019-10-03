@@ -113,7 +113,7 @@ class DataCenter extends PureComponent {
         <div className="title">发布计划</div>
         <Button type="primary" className='marginTop20' onClick={this.showCreateDialog}>创建发布计划</Button>
         <Divider/>
-        <Table columns={this.columns} dataSource={tableData} pagination={pagination} rowKey='id' size='default'/>
+        <Table columns={this.columns} dataSource={tableData} pagination={pagination} rowKey='projectKey' size='default'/>
 
 
         <Modal title={'创建应用'}
