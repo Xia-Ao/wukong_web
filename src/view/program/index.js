@@ -63,16 +63,16 @@ class DataCenter extends PureComponent {
       render: (text, record) => {
         return (
           <div className="">
-            <Button type="primary" size="small" onClick={() => this.showModal(record)}>修改</Button>
+            <Button type="primary" size="small" onClick={() => this.showCreateDialog(record)}>修改</Button>
           </div>)
       },
     },
   ];
 
-  showCreateDialog = () => {
+  showCreateDialog = (record = {}) => {
     this.setState({
       createDialogShow: true,
-      // record
+      record,
     });
   };
 
@@ -110,13 +110,13 @@ class DataCenter extends PureComponent {
     const {tableData, pagination, createDialogShow, record } = this.state;
     return <Fragment>
       <div className="publish-plan-wrapper">
-        <div className="title">发布计划</div>
-        <Button type="primary" className='marginTop20' onClick={this.showCreateDialog}>创建发布计划</Button>
+        <div className="title">应用列表</div>
+        <Button type="primary" className='marginTop20' onClick={this.showCreateDialog}>接入新应用</Button>
         <Divider/>
         <Table columns={this.columns} dataSource={tableData} pagination={pagination} rowKey='projectKey' size='default'/>
 
 
-        <Modal title={'创建应用'}
+        <Modal title={!record.projectKey ? '创建应用' : '修改应用'}
           visible={createDialogShow}
           onCancel={this.modalCancel}
           footer={null}

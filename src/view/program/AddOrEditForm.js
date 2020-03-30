@@ -23,8 +23,12 @@ class AddOrEditForm extends PureComponent {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (record.$id) {
+          
           // 修改
+          message.warn('暂不支持修改，后续会加入');
+          return;
           editProject(values).then((res) => {
+           
             if (res.Result) {
               message.success('操作成功！');
               modalCancel(true);
@@ -36,7 +40,6 @@ class AddOrEditForm extends PureComponent {
         } else {
           // 新增
           addProject(values).then((res) => {
-            debugger;
             if (res.success) {
               message.success(res.message);
               modalCancel(true);
@@ -53,7 +56,6 @@ class AddOrEditForm extends PureComponent {
   render() {
     const { record, modalCancel } = this.props.data;
     const { getFieldDecorator, resetFields } = this.props.form;
-
     return <Form layout="vertical" onSubmit={this.handleSubmit} >
       <Form.Item label='应用名称'>
         {getFieldDecorator('projectName', {
@@ -103,7 +105,7 @@ class AddOrEditForm extends PureComponent {
 
       <Form.Item>
         {
-          record.$id ?
+          record.projectKey ?
             (<div className='edit-button'>
               <Button type="primary" htmlType="submit">修改</Button>
               <Button onClick={modalCancel}>取消</Button>
